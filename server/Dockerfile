@@ -1,0 +1,71 @@
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+# All rights reserved.
+#
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree.
+
+ARG BASE_IMAGE=ghcr.io/meta-pytorch/openenv-base:latest
+FROM ${BASE_IMAGE} AS builder
+
+WORKDIR /app
+
+# Install git (needed for dependency installs)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git && \
+    rm -rf /var/lib/apt/lists/*
+
+ARG BUILD_MODE=in-repo
+ARG ENV_NAME=specguard
+
+# Copy your project
+COPY . /app/env
+
+WORKDIR /app/env
+
+# Ensure uv is available
+RUN if ! command -v uv >/dev/null 2>&1; then \
+    curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    mv /root/.local/bin/uv /usr/local/bin/uv && \
+    mv /root/.local/bin/uvx /usr/local/bin/uvx; \
+    fi
+
+# Install dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    if [ -f uv.lock ]; then \
+    uv sync --frozen --no-install-project --no-editable; \
+    else \
+    uv sync --no-install-project --no-editable; \
+    fi
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    if [ -f uv.lock ]; then \
+    uv sync --frozen --no-editable; \
+    else \
+    uv sync --no-editable; \
+    fi
+
+# =========================
+# FINAL RUNTIME STAGE
+# =========================
+FROM ${BASE_IMAGE}
+
+WORKDIR /app
+
+# Copy virtual environment
+COPY --from=builder /app/env/.venv /app/.venv
+
+# Copy project files
+COPY --from=builder /app/env /app/env
+
+# Use venv
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Fix imports
+ENV PYTHONPATH="/app/env:$PYTHONPATH"
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run server
+CMD ["sh", "-c", "cd /app/env && uvicorn server.app:app --host 0.0.0.0 --port 8000"]
