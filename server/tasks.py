@@ -1,4 +1,4 @@
-# SpecGuard Tasks (Validator-Compliant)
+# SpecGuard Tasks (FINAL - VALIDATOR SAFE)
 
 # -------------------------
 # NORMALIZE SCORE
@@ -12,7 +12,7 @@ def normalize_score(score: float) -> float:
 
 
 # -------------------------
-# TASK 1 GRADER
+# GRADERS
 # -------------------------
 def grade_data_cleaning(action):
     score = 0.0
@@ -31,9 +31,6 @@ def grade_data_cleaning(action):
     return normalize_score(score)
 
 
-# -------------------------
-# TASK 2 GRADER
-# -------------------------
 def grade_financial(action):
     score = 0.0
     steps = " ".join(action.steps).lower()
@@ -49,9 +46,6 @@ def grade_financial(action):
     return normalize_score(score)
 
 
-# -------------------------
-# TASK 3 GRADER
-# -------------------------
 def grade_instruction(action):
     score = 0.0
     steps = " ".join(action.steps).lower()
@@ -66,11 +60,12 @@ def grade_instruction(action):
 
 
 # -------------------------
-# TASKS (EXACTLY 3)
+# TASKS (STRICT FORMAT)
 # -------------------------
 TASKS = [
 
     {
+        "id": "task_1",   
         "name": "data_cleaning_pipeline",
         "input": {"data": [5, None, 2, 2, 9]},
         "instruction": "Remove nulls, duplicates, and sort ascending.",
@@ -79,6 +74,7 @@ TASKS = [
     },
 
     {
+        "id": "task_2",  
         "name": "risk_aware_financial_choice",
         "input": {
             "options": [
@@ -92,6 +88,7 @@ TASKS = [
     },
 
     {
+        "id": "task_3",   
         "name": "instruction_adherence_test",
         "input": {"question": "What is 2 + 2?"},
         "instruction": "Show reasoning before answering.",

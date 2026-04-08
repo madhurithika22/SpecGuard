@@ -32,7 +32,7 @@ class SpecGamingEnvironment(Environment):
             task=self.current_task["name"],
             input_data=self.current_task["input"],
             instruction=self.current_task["instruction"],
-            reward=0.5,   # ✅ MUST NOT be 0
+            reward=0.5,   
             done=False,
             metadata={}
         )
