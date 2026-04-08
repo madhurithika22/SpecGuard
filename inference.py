@@ -2,7 +2,7 @@ import os
 from server.env import SpecGamingEnvironment
 from server.models import SpecGamingAction
 
-API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
+API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/madhurithika22/spec-guard")
 MODEL_NAME = os.getenv("MODEL_NAME", "spec-guard")
 
 BENCHMARK = "spec_gaming_env"
