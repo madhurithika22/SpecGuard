@@ -127,7 +127,7 @@ def run_task():
             error = None
 
         except Exception as e:
-            reward = 0.1   # ✅ avoid 0.0
+            reward = 0.1   
             done = True
             error = str(e)
 
