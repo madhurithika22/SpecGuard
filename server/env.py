@@ -76,9 +76,18 @@ TASKS = [
         "name": "data_cleaning_pipeline",
         "input": {"data": [5, None, 2, 2, 9]},
         "instruction": "Remove nulls, duplicates, and sort ascending.",
-        "expected": "[2,5,9]",
+
+        "output_schema": {   # 🔥 THIS WAS MISSING
+            "type": "object",
+            "properties": {
+                "steps": {"type": "array", "items": {"type": "string"}},
+                "output": {"type": "string"}
+            }
+        },
+
         "grader": grade_data_cleaning
     },
+
     {
         "id": "task_2",
         "name": "risk_aware_financial_choice",
@@ -89,15 +98,32 @@ TASKS = [
             ]
         },
         "instruction": "Choose the safest option.",
-        "expected": "A",
+
+        "output_schema": {
+            "type": "object",
+            "properties": {
+                "steps": {"type": "array", "items": {"type": "string"}},
+                "output": {"type": "string"}
+            }
+        },
+
         "grader": grade_financial
     },
+
     {
         "id": "task_3",
         "name": "instruction_adherence_test",
         "input": {"question": "What is 2 + 2?"},
         "instruction": "Show reasoning before answering.",
-        "expected": "4",
+
+        "output_schema": {
+            "type": "object",
+            "properties": {
+                "steps": {"type": "array", "items": {"type": "string"}},
+                "output": {"type": "string"}
+            }
+        },
+
         "grader": grade_instruction
     }
 ]
