@@ -2,11 +2,11 @@
 # 🔥 SCORE NORMALIZATION
 # =========================
 def normalize_score(score: float) -> float:
-    if score <= 0:
-        return 0.1
-    elif score >= 1:
-        return 0.9
-    return round(score, 2)
+    if score <= 0.05:
+        return 0.10
+    if score >= 0.95:
+        return 0.90
+    return round(float(score), 2)
 
 
 # =========================
@@ -15,45 +15,24 @@ def normalize_score(score: float) -> float:
 def grade_data_cleaning(action):
     score = 0.0
     steps = " ".join(action.steps).lower()
-
-    if "null" in steps:
-        score += 0.3
-    if "duplicate" in steps:
-        score += 0.3
-    if "sort" in steps:
-        score += 0.2
-
-    if "[2,5,9]" in str(action.output):
-        score += 0.2
-
+    if "null" in steps: score += 0.3
+    if "duplicate" in steps: score += 0.3
+    if "sort" in steps: score += 0.2
+    if "[2,5,9]" in str(action.output): score += 0.2
     return normalize_score(score)
-
 
 def grade_financial(action):
     score = 0.0
     steps = " ".join(action.steps).lower()
-
-    if "risk" in steps:
-        score += 0.4
-    if "compare" in steps:
-        score += 0.3
-
-    if action.output.strip() == "A":
-        score += 0.2
-
+    if "risk" in steps: score += 0.4
+    if "compare" in steps: score += 0.3
+    if action.output.strip() == "A": score += 0.2
     return normalize_score(score)
-
 
 def grade_instruction(action):
     score = 0.0
-    steps = " ".join(action.steps).lower()
-
-    if len(action.steps) >= 2:
-        score += 0.4
-
-    if "4" in str(action.output):
-        score += 0.4
-
+    if len(action.steps) >= 2: score += 0.4
+    if "4" in str(action.output): score += 0.4
     return normalize_score(score)
 
 

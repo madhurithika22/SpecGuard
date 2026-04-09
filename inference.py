@@ -7,13 +7,14 @@ from server.env import SpecGamingEnvironment
 from server.models import SpecGamingAction
 
 # MANDATORY ENVIRONMENT VARIABLES
+# These must match the infrastructure restrictions for Phase 2 validation.
 API_BASE_URL = os.getenv("API_BASE_URL") or "https://router.huggingface.co/v1"
 MODEL_NAME = os.getenv("MODEL_NAME") or "Qwen/Qwen2.5-72B-Instruct"
-# Uses HF_TOKEN as prioritized in requirements
+# Phase 2 mandates the use of HF_TOKEN for credentials.
 API_KEY = os.getenv("HF_TOKEN") or os.getenv("API_KEY")
 
 BENCHMARK = "spec_gaming_env"
-MAX_STEPS = 8  # Adjusted to match sample script recommendation
+MAX_STEPS = 8 
 
 # Check if LLM usage is possible
 USE_LLM = API_BASE_URL is not None and API_KEY is not None
@@ -62,20 +63,22 @@ Return ONLY valid JSON:
         parsed = json.loads(content)
         return parsed
     except Exception:
+        # Fallback return to ensure the script continues.
         return {
             "steps": ["error recovery"],
             "output": "error"
         }
 
 def run_task():
+    # Initialize environment and ensure tasks are loaded
     env = SpecGamingEnvironment()
     obs = env.reset()
     
     rewards = []
     total_steps = 0
-    success = False
+    success = "false"
 
-    # 1. [START] line
+    # 1. [START] line - Mandatory format
     print(f"[START] task={obs.task} env={BENCHMARK} model={MODEL_NAME}")
 
     try:
@@ -85,15 +88,16 @@ def run_task():
             
             error_msg = "null"
             try:
+                # Execute step and capture observation with reward
                 action = SpecGamingAction(**action_dict)
                 obs = env.step(action)
                 
                 reward = float(obs.reward)
                 done = bool(obs.done)
-                # action_str for logs
                 action_str = action_dict.get("output", "no_output")
             except Exception as e:
-                reward = 0.00
+                # Phase 2 score range fix: Must be strictly between 0 and 1
+                reward = 0.10
                 done = True
                 error_msg = str(e).replace("\n", " ")
                 action_str = "error"
@@ -101,24 +105,26 @@ def run_task():
             rewards.append(reward)
             
             # 2. [STEP] line: lowercase booleans and 2nd decimal place
+            # Ensure no internal newlines within the line.
             print(
                 f"[STEP] step={step} action='{action_str}' "
                 f"reward={reward:.2f} done={str(done).lower()} error={error_msg}"
             )
 
             if done:
-                # Assuming reward 1.0 is full success
-                success = reward >= 1.0
+                # Success is true if the reward is > 0 as per scoring rules
+                # Adjust threshold if your graders utilize partial credit.
+                success = "true" if reward > 0.5 else "false"
                 break
                 
     finally:
-        # 3. [END] line: even on exception, must include rewards sequence
+        # 3. [END] line: mandatory rewards sequence
         rewards_formatted = ",".join([f"{r:.2f}" for r in rewards])
-        # Score is typically the final or max reward
-        score = rewards[-1] if rewards else 0.00
+        # Score is the final normalized reward
+        score = rewards[-1] if rewards else 0.10
         
         print(
-            f"[END] success={str(success).lower()} steps={total_steps} "
+            f"[END] success={success} steps={total_steps} "
             f"score={score:.2f} rewards={rewards_formatted}"
         )
 
