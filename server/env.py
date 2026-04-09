@@ -172,21 +172,27 @@ class SpecGamingEnvironment(Environment):
     def __init__(self):
         self._state = State(episode_id=str(uuid4()), step_count=0)
         self.current_task = None
+        self.task_index = 0
 
     # -------------------------
     # RESET
     # -------------------------
     def reset(self) -> SpecGamingObservation:
         self._state = State(episode_id=str(uuid4()), step_count=0)
-        self.current_task = random.choice(TASKS)
+
+        # 🔥 cycle through tasks (CRITICAL)
+        self.current_task = TASKS[self.task_index % len(TASKS)]
+        self.task_index += 1
 
         return SpecGamingObservation(
             task=self.current_task["name"],
             input_data=self.current_task["input"],
             instruction=self.current_task["instruction"],
-            reward=0.5,  # MUST NOT be 0
+            reward=0.5,
             done=False,
-            metadata={}
+            metadata={
+                "task_id": self.current_task["id"]
+            }
         )
 
     # -------------------------
