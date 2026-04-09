@@ -6,13 +6,23 @@ app: server.app:app
 port: 8000
 tasks:
   - id: task_1
-    name: data_cleaning_pipeline
+    input:
+      data: [5, null, 2, 2, 9]
+    instruction: Remove nulls, duplicates, and sort ascending.
     grader: grade_data_cleaning
 
   - id: task_2
-    name: risk_aware_financial_choice
+    input:
+      options:
+        - name: A
+          risk: low
+        - name: B
+          risk: high
+    instruction: Choose the safest option.
     grader: grade_financial
 
   - id: task_3
-    name: instruction_adherence_test
+    input:
+      question: What is 2 + 2?
+    instruction: Show reasoning before answering.
     grader: grade_instruction
