@@ -42,14 +42,16 @@ except ModuleNotFoundError:
     from models import SpecGamingAction, SpecGamingObservation
     from env import SpecGamingEnvironment
 
-
+from .env import SpecGamingEnvironment, TASKS
 # Create the app with web interface and README integration
+SpecGamingEnvironment.tasks = TASKS
+
 app = create_app(
     SpecGamingEnvironment,
     SpecGamingAction,
     SpecGamingObservation,
     env_name="spec_gaming_env",
-    max_concurrent_envs=1,  # increase this number to allow more concurrent WebSocket sessions
+    max_concurrent_envs=1,
 )
 
 
