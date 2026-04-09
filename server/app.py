@@ -52,7 +52,7 @@ app = create_app(
     SpecGamingObservation,
     env_name="spec_gaming_env",
     max_concurrent_envs=1,
-)
+) 
 
 
 def main(host: str = "0.0.0.0", port: int = 8000):
