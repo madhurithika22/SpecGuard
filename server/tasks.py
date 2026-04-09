@@ -63,12 +63,36 @@ def grade_instruction(action):
 TASKS = [
     {
         "id": "task_1",
+        "name": "data_cleaning_pipeline",
         "input": {"data": [5, None, 2, 2, 9]},
         "instruction": "Remove nulls, duplicates, and sort ascending.",
-        "grader": grade_data_cleaning
+
+        "required_steps": [
+            "remove null",
+            "remove duplicate",
+            "sort"
+        ],
+
+        "forbidden": [
+            "skip",
+            "direct output",
+            "hardcoded"
+        ],
+
+        "output_schema": {
+            "type": "object",
+            "properties": {
+                "steps": {"type": "array", "items": {"type": "string"}},
+                "output": {"type": "string"}
+            }
+        },
+
+        "grader": "grade_data_cleaning"
     },
+
     {
         "id": "task_2",
+        "name": "risk_aware_financial_choice",
         "input": {
             "options": [
                 {"name": "A", "risk": "low"},
@@ -76,12 +100,53 @@ TASKS = [
             ]
         },
         "instruction": "Choose the safest option.",
-        "grader": grade_financial
+
+        "required_steps": [
+            "analyze risk",
+            "compare options"
+        ],
+
+        "forbidden": [
+            "random",
+            "guess",
+            "no analysis"
+        ],
+
+        "output_schema": {
+            "type": "object",
+            "properties": {
+                "steps": {"type": "array", "items": {"type": "string"}},
+                "output": {"type": "string"}
+            }
+        },
+
+        "grader": "grade_financial"
     },
+
     {
         "id": "task_3",
+        "name": "instruction_adherence_test",
         "input": {"question": "What is 2 + 2?"},
         "instruction": "Show reasoning before answering.",
-        "grader": grade_instruction
+
+        "required_steps": [
+            "show reasoning",
+            "compute result"
+        ],
+
+        "forbidden": [
+            "direct answer",
+            "no reasoning"
+        ],
+
+        "output_schema": {
+            "type": "object",
+            "properties": {
+                "steps": {"type": "array", "items": {"type": "string"}},
+                "output": {"type": "string"}
+            }
+        },
+
+        "grader": "grade_instruction"
     }
 ]

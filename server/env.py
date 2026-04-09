@@ -174,6 +174,12 @@ class SpecGamingEnvironment(Environment):
         self._state = State(episode_id=str(uuid4()), step_count=0)
         self.current_task = None
         self.task_index = 0
+        self.tasks = TASKS
+        self._grader_map = {
+            "grade_data_cleaning": grade_data_cleaning,
+            "grade_financial": grade_financial,
+            "grade_instruction": grade_instruction
+        }
 
     # -------------------------
     # RESET
@@ -182,7 +188,7 @@ class SpecGamingEnvironment(Environment):
         self._state = State(episode_id=str(uuid4()), step_count=0)
 
         # 🔥 cycle through tasks (CRITICAL)
-        self.current_task = TASKS[self.task_index % len(TASKS)]
+        self.current_task = self.tasks[self.task_index % len(self.tasks)]
         self.task_index += 1
 
         return SpecGamingObservation(
