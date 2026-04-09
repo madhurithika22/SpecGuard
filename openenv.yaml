@@ -4,4 +4,15 @@ type: space
 runtime: fastapi
 app: server.app:app
 port: 8000
+tasks:
+  - id: task_1
+    name: data_cleaning_pipeline
+    grader: grade_data_cleaning
 
+  - id: task_2
+    name: risk_aware_financial_choice
+    grader: grade_financial
+
+  - id: task_3
+    name: instruction_adherence_test
+    grader: grade_instruction

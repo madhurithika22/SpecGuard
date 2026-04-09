@@ -10,7 +10,6 @@ API_KEY = os.getenv("API_KEY")
 
 MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o-mini")
 
-# ✅ CHECK IF LLM CAN BE USED
 USE_LLM = API_BASE_URL is not None and API_KEY is not None
 
 client = None
