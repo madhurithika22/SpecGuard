@@ -24,9 +24,9 @@ class SpecGamingEnvironment(Environment):
     """
     SUPPORTS_CONCURRENT_SESSIONS: bool = True
 
+    tasks = TASKS
+
     def __init__(self):
-        # MANDATORY: The OpenEnv validator checks this attribute to count tasks.
-        # This resolves the "Not enough tasks with graders" error.
         self.tasks = TASKS 
         
         self._state = State(episode_id=str(uuid4()), step_count=0)
