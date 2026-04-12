@@ -129,4 +129,5 @@ def run_task():
         )
 
 if __name__ == "__main__":
-    run_task()
+    for _ in range(3):
+        run_task()

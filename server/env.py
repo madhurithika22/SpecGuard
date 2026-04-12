@@ -27,6 +27,7 @@ class SpecGamingEnvironment(Environment):
     tasks = TASKS
 
     def __init__(self):
+        super().__init__()
         self.tasks = TASKS 
         
         self._state = State(episode_id=str(uuid4()), step_count=0)
@@ -69,37 +70,31 @@ class SpecGamingEnvironment(Environment):
     # -------------------------
     # STEP
     # -------------------------
-    def step(self, action: SpecGamingAction) -> SpecGamingObservation:  # type: ignore[override]
-        """
-        Executes an agent action and returns a graded observation.
-        """
+    def step(self, action: SpecGamingAction) -> SpecGamingObservation:
         self._state.step_count += 1
-
+        
         try:
-            # Determine which grader to use
-            grader = self.current_task["grader"]
+            grader = self.current_task.get("grader")
             
-            # If the grader is stored as a string name, look it up
+            # Use the map only as a fallback for strings, otherwise call directly
             if isinstance(grader, str):
-                reward = self._grader_map[grader](action)
-            else:
+                reward = self._grader_map.get(grader, lambda x: 0.10)(action)
+            elif callable(grader):
                 reward = grader(action)
+            else:
+                reward = 0.10
                 
             reason = "graded via task grader"
         except Exception as e:
-            # Fallback reward must be within (0, 1) range
             reward = 0.10
             reason = f"grader error: {str(e)}"
-
-        # Ensure the reward is strictly between 0 and 1
-        final_reward = float(reward)
 
         return SpecGamingObservation(
             task=self.current_task["name"],
             input_data=self.current_task["input"],
             instruction=self.current_task["instruction"],
-            reward=final_reward,
-            done=True, # Tasks are currently single-step completion
+            reward=float(reward),
+            done=True,
             metadata={
                 "reason": reason,
                 "steps": action.steps,
