@@ -20,6 +20,7 @@ dependencies = [
     "openenv-core[core]>=0.2.2",
     # Environment-specific dependencies
     # Add all dependencies needed for your environment here
+    "openai",
     # Examples:
     # "numpy>=1.19.0",
     # "torch>=2.0.0",
