@@ -66,7 +66,7 @@ TASKS = [
             }
         },
 
-        "grader": "grade_data_cleaning"
+        "grader": grade_data_cleaning
     },
 
     {
@@ -99,7 +99,7 @@ TASKS = [
             }
         },
 
-        "grader": "grade_financial"
+        "grader": grade_financial
     },
 
     {
@@ -126,6 +126,6 @@ TASKS = [
             }
         },
 
-        "grader": "grade_instruction"
+        "grader": grade_instruction
     }
 ]
